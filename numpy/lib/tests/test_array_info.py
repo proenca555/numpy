@@ -161,3 +161,21 @@ def test_performance_1m(monkeypatch):
     elapsed = time.perf_counter() - start
 
     assert elapsed < 0.5, f"array_info too slow: {elapsed:.3f}s"
+
+# ---------------------------------------------------------------------
+# 14. Axis-wise mean check
+# ---------------------------------------------------------------------
+def test_axis_mean():
+    a = np.arange(6).reshape(2, 3)
+    stats = np.array_info(a, axis=0)["axis_stats"]
+    assert (stats["mean"] == np.array([1.5, 2.5, 3.5])).all()
+
+# ---------------------------------------------------------------------
+# 15. Percentile & IQR on flattened data
+# ---------------------------------------------------------------------
+def test_percentiles():
+    a = np.arange(1, 5)         
+    info = np.array_info(a, percentiles=(25, 50, 75))
+    assert info["p25"] == 1.75
+    assert info["p75"] == 3.25
+    assert info["iqr"] == 1.5
